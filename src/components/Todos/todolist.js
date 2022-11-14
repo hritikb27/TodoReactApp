@@ -1,0 +1,50 @@
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { v4 as uuidv4 } from 'uuid';
+import { addTodo } from "../../features/todo/todoSlice";
+import TodoInput from "./TodoInput";
+
+const TodoList = () => {
+    const { todos } = useSelector(state => state.todos)
+    const dispatch = useDispatch()
+    // const [todosList, setTodosList] = useState(todos)
+
+    const handleNew = () => {
+        dispatch(addTodo(''))
+        // setTodosList(prev => [{name: '', id: uuidv4()}, ...prev])
+    }
+
+    useEffect(() => {
+        console.log(todos)
+    },[todos])
+
+    return (
+        <div className="w-full mt-8 flex flex-col items-center gap-5">
+            <h2 className="text-4xl font-bold">My To-Do List</h2>
+            <div className="w-[30%] min-w-[375px] border border-black h-[800px] rounded">
+                <div className="w-full h-[70px] flex justify-evenly items-center border border-b-black">
+                    <div class="w-[30%] relative text-gray-600 focus-within:text-gray-400">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-2">
+                            <button type="submit" class="p-1 focus:outline-none focus:shadow-outline">
+                                <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" class="w-6 h-6"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                            </button>
+                        </span>
+                        <input type="search" name="q" className="w-full h-[40px] py-2 text-sm text-white border border-black bg-white rounded-full pl-10 focus:outline-none focus:bg-white focus:text-gray-900" placeholder="search" autocomplete="off" />
+                    </div>
+                    <button onClick={handleNew} className="w-[20%] h-[40px] border-t border-l-2 border-r-4 border-b-4 border-black shadow-2xl bg-blue-500 hover:bg-blue-700 text-white uppercase text-sm font-semibold px-4 py-2 rounded">New</button>
+                </div>
+                <div className="flex flex-col">
+                    {todos.map((todo, index) => {
+                        console.log(todo.name)
+                        return <TodoInput todo={todo} key={todo.id} />
+                    })}
+
+                </div>
+            </div>
+            <Link><div className="w-[6%] min-w-[100px] text-center h-[40px] mr-10 mt-2 absolute top-0 right-0 border-t border-l-2 border-r-4 border-b-4 border-black shadow-2xl bg-white hover:bg-gray-700 text-black uppercase text-sm font-semibold px-4 py-2 rounded">Logout</div></Link>
+        </div>
+    )
+}
+
+export default TodoList;
