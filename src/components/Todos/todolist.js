@@ -7,17 +7,23 @@ import TodoInput from "./TodoInput";
 
 const TodoList = () => {
     const { todos } = useSelector(state => state.todos)
+    const [todoList, setTodosList] = useState(todos)
     const dispatch = useDispatch()
-    // const [todosList, setTodosList] = useState(todos)
-
-    const handleNew = () => {
-        dispatch(addTodo(''))
-        // setTodosList(prev => [{name: '', id: uuidv4()}, ...prev])
-    }
 
     useEffect(() => {
-        console.log(todos)
+        setTodosList(todos)
     },[todos])
+    
+    const handleAddTodo = () => {
+        dispatch(addTodo(''))
+    }
+
+    const handleSearch = (searchText) => {
+        const filteredTodos = todos.filter(todo => {
+            return todo.name.toLowerCase().includes(searchText)
+        })
+        setTodosList(filteredTodos)
+    }
 
     return (
         <div className="w-full mt-8 flex flex-col items-center gap-5">
@@ -30,12 +36,12 @@ const TodoList = () => {
                                 <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" class="w-6 h-6"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                             </button>
                         </span>
-                        <input type="search" name="q" className="w-full h-[40px] py-2 text-sm text-white border border-black bg-white rounded-full pl-10 focus:outline-none focus:bg-white focus:text-gray-900" placeholder="search" autocomplete="off" />
+                        <input type="search" onChange={(e)=>handleSearch(e.target.value)} name="q" className="w-full h-[40px] py-2 text-sm text-white border border-black bg-white rounded-full pl-10 focus:outline-none focus:bg-white focus:text-gray-900" placeholder="search" autocomplete="off" />
                     </div>
-                    <button onClick={handleNew} className="w-[20%] h-[40px] border-t border-l-2 border-r-4 border-b-4 border-black shadow-2xl bg-blue-500 hover:bg-blue-700 text-white uppercase text-sm font-semibold px-4 py-2 rounded">New</button>
+                    <button onClick={handleAddTodo} className="w-[20%] h-[40px] border-t border-l-2 border-r-4 border-b-4 border-black shadow-2xl bg-blue-500 hover:bg-blue-700 text-white uppercase text-sm font-semibold px-4 py-2 rounded">New</button>
                 </div>
                 <div className="flex flex-col">
-                    {todos.map((todo, index) => {
+                    {todoList.map((todo, index) => {
                         console.log(todo.name)
                         return <TodoInput todo={todo} key={todo.id} />
                     })}
