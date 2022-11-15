@@ -1,17 +1,18 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { validateEmail, classNames } from '../utils'
 
 const Login = () => {
-    const [email, setEmail] = useState()
-    const [password, setPassword] = useState()
+    const [email, setEmail] = useState(undefined)
+    const [password, setPassword] = useState(undefined)
     const [emailValidation, setEmailValidation] = useState(true)
     const [passwordValidation, setPasswordValidation] = useState(true)
+    const loginDisableRef = useRef(true);
 
     const handleEmail = (email) => {
         const validate = validateEmail(email)
         if (validate) {
-            return setEmailValidation(true)
+            setEmailValidation(true)
         }
         else {
             setEmailValidation(false)
@@ -21,13 +22,36 @@ const Login = () => {
 
     const handlePassword = (password) => {
         if (password.length >= 4 && password.length <= 16) {
-            return setPasswordValidation(true)
+            setPasswordValidation(true)
         }
         else {
             setPasswordValidation(false)
         }
+        console.log(password)
         setPassword(password)
     }
+
+    const handleLogin = async () => {
+        const loginCall = await fetch('http://dev.rapptrlabs.com/Tests/scripts/user-login.php', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            mode: 'cors',
+            body: JSON.stringify({ email: 'test@rapptrlabs.com', password: 'Test123' })
+        })
+
+        const result = await loginCall.json()
+        console.log('loginCall req: ', result)
+    }
+
+    useEffect(() => {
+        if(!email && !password) loginDisableRef.current = true
+        if((emailValidation && passwordValidation) && (email && password)){
+            loginDisableRef.current = false
+        }
+    }, [emailValidation, passwordValidation])
 
     return (
         <div className="flex items-center h-screen w-full">
@@ -42,7 +66,7 @@ const Login = () => {
                         <label htmlFor="password" className="block text-xs mb-1">Password</label>
                         <input className={classNames(passwordValidation ? '' : 'border-red-400', "w-full border rounded p-2 outline-none focus:shadow-outline")} value={password} onChange={(e) => handlePassword(e.target.value)} type="password" name="password" id="password" placeholder="Must be at least 4 characters" />
                     </div>
-                    <Link to='/todo'><button className={classNames(emailValidation ? '' : 'opacity-50', "w-full border-t border-l-2 border-r-4 border-b-4 border-black shadow-2xl bg-blue-500 hover:bg-blue-700 text-white uppercase text-sm font-semibold px-4 py-2 rounded")}>Login</button></Link>
+                    <Link to='/todo'><button disabled={loginDisableRef.current} onClick={handleLogin} className={classNames((email && password) && (emailValidation && passwordValidation) ? '' : 'opacity-50', "w-full border-t border-l-2 border-r-4 border-b-4 border-black shadow-2xl bg-blue-500 hover:bg-blue-700 text-white uppercase text-sm font-semibold px-4 py-2 rounded")}>Login</button></Link>
                 </form>
             </div>
         </div>
