@@ -8,7 +8,7 @@ function App() {
     <div className="w-full flex justify-center">
       <BrowserRouter>
         <Routes>
-          <Route path="/login" element={<Login />} />
+          <Route path="/" element={<Login />} />
           <Route path="/todo" element={<TodoList />} />
         </Routes>
       </BrowserRouter>

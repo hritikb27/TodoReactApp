@@ -15,7 +15,7 @@ const TodoList = () => {
         // redirect to login page if there is no login data persisted in localstorage
         const getLoginData = loadState('login');
         if(!getLoginData){
-            navigate('/login')
+            navigate('/')
         }
     },[])
 
@@ -63,7 +63,7 @@ const TodoList = () => {
 
                 </div>
             </div>
-            <Link to='/login'><div onClick={handleLogout} className="w-[6%] min-w-[100px] text-center h-[40px] mr-8 lg:mr-10 mt-2 absolute top-0 right-0 border-t border-l-2 border-r-4 border-b-4 border-black shadow-2xl bg-white hover:bg-gray-700 text-black uppercase text-sm font-semibold px-4 py-2 rounded">Logout</div></Link>
+            <Link to='/'><div onClick={handleLogout} className="w-[6%] min-w-[100px] text-center h-[40px] mr-8 lg:mr-10 mt-2 absolute top-0 right-0 border-t border-l-2 border-r-4 border-b-4 border-black shadow-2xl bg-white hover:bg-gray-700 text-black uppercase text-sm font-semibold px-4 py-2 rounded">Logout</div></Link>
         </div>
     )
 }
