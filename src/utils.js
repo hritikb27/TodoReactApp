@@ -7,4 +7,25 @@ function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
-export { validateEmail, classNames }
+function saveState (state) {
+    try {
+      const serialState = JSON.stringify(state);
+      localStorage.setItem('todoState', serialState);
+    } catch(err) {
+        console.log(err);
+    }
+};
+
+function loadState() {
+    try {
+      const serialState = localStorage.getItem('todoState');
+      if (serialState === null) {
+        return undefined;
+      }
+      return JSON.parse(serialState);
+    } catch (err) {
+      return undefined;
+    }
+};
+
+export { validateEmail, classNames, saveState, loadState }

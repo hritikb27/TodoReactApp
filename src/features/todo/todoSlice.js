@@ -1,19 +1,11 @@
 import { createSlice  } from '@reduxjs/toolkit';
 import { v4 as uuidv4 } from 'uuid';
+import { loadState } from '../../utils';
 
 export const todoSlice = createSlice({
     name: 'todos',
     initialState: {
-        todos: [
-            {
-                name: 'pay bills',
-                id: 1
-            },
-            {
-                name: 'workout',
-                id: 2
-            }
-        ]
+        todos: loadState() ? loadState() : []
     },
     reducers: {
         addTodo: (state, action) => {
@@ -36,12 +28,17 @@ export const todoSlice = createSlice({
 
         deleteTodo: (state, action) => {
             state.todos = state.todos.filter(todo => todo.id !== action.payload)
+        },
+
+        addTodoList: (state, action) => {
+            console.log('changinmg')
+            state.todos = action.payload;
         }
     }
 });
 
 // this is for dispatch
-export const { addTodo, updateTodo, deleteTodo } = todoSlice.actions;
+export const { addTodo, updateTodo, deleteTodo, addTodoList } = todoSlice.actions;
 
 // this is for configureStore
 export default todoSlice.reducer;

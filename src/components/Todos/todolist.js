@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { v4 as uuidv4 } from 'uuid';
-import { addTodo } from "../../features/todo/todoSlice";
+import { addTodo, addTodoList } from "../../features/todo/todoSlice";
 import TodoInput from "./TodoInput";
+import store from "../../app/store";
+import { loadState, saveState } from "../../utils";
 
 const TodoList = () => {
     const { todos } = useSelector(state => state.todos)
@@ -11,9 +12,21 @@ const TodoList = () => {
     const dispatch = useDispatch()
 
     useEffect(() => {
+        const getLocalData = loadState();
+        if(getLocalData){
+            console.log('localData: ', getLocalData)
+            dispatch(addTodoList(getLocalData))
+        }
+        
+    },[])
+
+    useEffect(() => {
         setTodosList(todos)
+        // persist todoList in localstorage
+        saveState(todos)
+        console.log(todos)
     },[todos])
-    
+
     const handleAddTodo = () => {
         dispatch(addTodo(''))
     }
@@ -41,8 +54,7 @@ const TodoList = () => {
                     <button onClick={handleAddTodo} className="w-[20%] h-[40px] border-t border-l-2 border-r-4 border-b-4 border-black shadow-2xl bg-blue-500 hover:bg-blue-700 text-white uppercase text-sm font-semibold px-4 py-2 rounded">New</button>
                 </div>
                 <div className="flex flex-col">
-                    {todoList.map((todo, index) => {
-                        console.log(todo.name)
+                    {todoList && todoList.map((todo, index) => {
                         return <TodoInput todo={todo} key={todo.id} />
                     })}
 
