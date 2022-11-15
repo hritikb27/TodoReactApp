@@ -2,10 +2,13 @@ import { createSlice  } from '@reduxjs/toolkit';
 import { v4 as uuidv4 } from 'uuid';
 import { loadState } from '../../utils';
 
+const LoadState = loadState('todoState')
+
 export const todoSlice = createSlice({
     name: 'todos',
     initialState: {
-        todos: loadState() ? loadState() : []
+        // if there is localstorage data persisted, add it to the state else initialize with empty array
+        todos: LoadState ? LoadState : []
     },
     reducers: {
         addTodo: (state, action) => {
@@ -13,7 +16,7 @@ export const todoSlice = createSlice({
                 id: uuidv4(),
                 name: "",
             };
-
+            // add todo item to the beginning of the array
             state.todos.unshift(todo);
         },
 
@@ -31,7 +34,6 @@ export const todoSlice = createSlice({
         },
 
         addTodoList: (state, action) => {
-            console.log('changinmg')
             state.todos = action.payload;
         }
     }

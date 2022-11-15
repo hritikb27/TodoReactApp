@@ -7,18 +7,18 @@ function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
-function saveState (state) {
+function saveState (name,state) {
     try {
       const serialState = JSON.stringify(state);
-      localStorage.setItem('todoState', serialState);
+      localStorage.setItem(name, serialState);
     } catch(err) {
         console.log(err);
     }
 };
 
-function loadState() {
+function loadState(name) {
     try {
-      const serialState = localStorage.getItem('todoState');
+      const serialState = localStorage.getItem(name);
       if (serialState === null) {
         return undefined;
       }

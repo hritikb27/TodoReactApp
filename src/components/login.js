@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
-import { validateEmail, classNames } from '../utils'
+import { Link, useNavigate } from "react-router-dom";
+import { validateEmail, classNames, saveState, loadState } from '../utils'
 
 const Login = () => {
     const [email, setEmail] = useState(undefined)
@@ -8,6 +8,15 @@ const Login = () => {
     const [emailValidation, setEmailValidation] = useState(true)
     const [passwordValidation, setPasswordValidation] = useState(true)
     const loginDisableRef = useRef(true);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        // redirect to todo page if user has login data persisted in localstorage
+        const getLoginData = loadState('login');
+        if(getLoginData){
+            navigate('/todo')
+        }
+    }, [])
 
     const handleEmail = (email) => {
         const validate = validateEmail(email)
@@ -27,15 +36,15 @@ const Login = () => {
         else {
             setPasswordValidation(false)
         }
-        console.log(password)
         setPassword(password)
     }
 
     const handleLogin = async () => {
+        saveState('login', {email, password})
+        // response is not coming back successfully due to cors policy issue, maybe cors is not set with allow all origins to the server
         const loginCall = await fetch('http://dev.rapptrlabs.com/Tests/scripts/user-login.php', {
             method: 'POST',
             headers: {
-                'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
             mode: 'cors',
@@ -43,10 +52,12 @@ const Login = () => {
         })
 
         const result = await loginCall.json()
-        console.log('loginCall req: ', result)
+        // save login data in localstorage
+        saveState('login', {email, password})
     }
 
     useEffect(() => {
+        // make login button disabled when input fields are empty and until all validations are not passed
         if(!email && !password) loginDisableRef.current = true
         if((emailValidation && passwordValidation) && (email && password)){
             loginDisableRef.current = false
